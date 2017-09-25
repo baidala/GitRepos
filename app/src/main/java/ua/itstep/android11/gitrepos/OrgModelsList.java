@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ModelsList {
+public class OrgModelsList {
 
     @SerializedName("total_count")
     @Expose
@@ -18,7 +18,7 @@ public class ModelsList {
     private Boolean incompleteResults;
     @SerializedName("items")
     @Expose
-    private List<Model> items = null;
+    private List<OrgModel> items = null;
 
     public Integer getTotalCount() {
         return totalCount;
@@ -36,11 +36,11 @@ public class ModelsList {
         this.incompleteResults = incompleteResults;
     }
 
-    public List<Model> getItems() {
+    public List<OrgModel> getItems() {
         return items;
     }
 
-    public void setItems(List<Model> items) {
+    public void setItems(List<OrgModel> items) {
         this.items = items;
     }
 
