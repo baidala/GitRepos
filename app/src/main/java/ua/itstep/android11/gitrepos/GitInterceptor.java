@@ -14,7 +14,6 @@ public class GitInterceptor implements Interceptor {
     public Response intercept(Interceptor.Chain chain) throws IOException {
         Request original = chain.request();
 
-        // Customize the request
         String customUrl = original.url().toString();
         customUrl = customUrl.replace("%26", "&");
         customUrl = customUrl.replace("%3D", "=");

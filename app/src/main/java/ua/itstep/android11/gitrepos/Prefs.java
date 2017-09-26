@@ -8,7 +8,7 @@ import android.net.Uri;
 
 public class Prefs {
 
-    static final boolean DEBUG = true;
+    static final boolean DEBUG = false;
     static final String LOG_TAG = "GitRepos>>>>>>>>>>>>>>";
     static final String KEY_RECYCLER_STATE = "recycler_state";
     static final String KEY_RECYCLER_DATASET_STATE  = "items_state";

@@ -31,9 +31,7 @@ public class GitContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String whereClause, String[] whereArgs) {
-
         int deleted = 0;
-
         database = dbHelper.getWritableDatabase();
         deleted = database.delete(Prefs.TABLE_RESULTS, whereClause, whereArgs);
         if (Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() + " deleted: " + deleted);

@@ -1,8 +1,6 @@
 package ua.itstep.android11.gitrepos;
 
 import android.app.Application;
-
-
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -30,6 +28,7 @@ public class MainApp extends Application {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         gitHubApi = retrofit.create(IGitHubApi.class);
 
     }

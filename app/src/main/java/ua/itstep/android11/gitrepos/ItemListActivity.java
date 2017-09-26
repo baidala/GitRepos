@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,8 +29,6 @@ import retrofit2.Response;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.security.AccessController.getContext;
 
 
 public class ItemListActivity extends AppCompatActivity {
@@ -240,35 +237,11 @@ public class ItemListActivity extends AppCompatActivity {
                 break;
             default:
                 break;
-
         }
 
-
-
-
-
-
-        /*
-        //new array list that will hold the filtered data
-        ArrayList<String> filteredNames = new ArrayList<>();
-
-        //looping through existing elements
-        for (String s : results) {
-            //if the existing elements contains the search input
-            if (s.toLowerCase().contains(text.toLowerCase())) {
-                //adding the element to filtered list
-                filteredNames.add(s);
-            }
-        }
-
-        //calling a method of the adapter class and passing the filtered list
-        recyclerView.getAdapter().notifyDataSetChanged();
-        //adapter.filterList(filterdNames);
-        */
     }
 
     private void searchOrg(String text){
-        //text = "fase"; //only for debug
         String query = text + "+type:org";
 
         MainApp.getApi().getOrganization(query).enqueue(new Callback<OrgModelsList>() {
@@ -298,7 +271,6 @@ public class ItemListActivity extends AppCompatActivity {
                         Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onResponse body: " + response.raw());
                         for (OrgModel m: items) {
                             Log.d(Prefs.LOG_TAG, getClass().getSimpleName() + "login: "+ m.getLogin());
-
                         }
                     }
 
@@ -355,7 +327,6 @@ public class ItemListActivity extends AppCompatActivity {
                         Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onResponse body: " + response.raw());
                         for (ReposModel m: items) {
                             Log.d(Prefs.LOG_TAG, getClass().getSimpleName() + "repos: "+ m.getFullName());
-
                         }
                     }
 
@@ -382,7 +353,7 @@ public class ItemListActivity extends AppCompatActivity {
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private ArrayList<Model> values;
+        private final ArrayList<Model> values;
 
 
         public SimpleItemRecyclerViewAdapter(ArrayList<Model> items) {
@@ -421,38 +392,8 @@ public class ItemListActivity extends AppCompatActivity {
                         Log.d(Prefs.LOG_TAG, getClass().getSimpleName() + " onBindViewHolder onClick editTextSearch.isShown: " + editTextSearch.isShown());
 
                     if (holder.mItem instanceof OrgModel) {
-                        //Bundle arguments = new Bundle();
-                        //arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.getId().toString());
-
                         search(((OrgModel) holder.mItem).getLogin(), Prefs.REPOS);
-
                     }
-
-
-                    //ItemDetailFragment fragment = new ItemDetailFragment();
-                    //fragment.setArguments(arguments);
-                    //getSupportFragmentManager().beginTransaction()
-                    //       .replace(R.id.frameLayout, fragment)
-                    //.show(fragment)
-                    //       .commit();
-
-                    /*
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        ItemDetailFragment fragment = new ItemDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.item_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, ItemDetailActivity.class);
-                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
-                        context.startActivity(intent);
-                    }
-                    */
                 }
             });
         }
@@ -460,12 +401,6 @@ public class ItemListActivity extends AppCompatActivity {
         public ArrayList<Model> getParcelableList() {
             Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +".getParcelableList ");
             return values;
-        }
-
-        public void setItems(ArrayList<Model> itemsList) {
-            Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +".setItems size: " +itemsList.size());
-            values = new ArrayList<Model>();
-            values.addAll(itemsList);
         }
 
         @Override
