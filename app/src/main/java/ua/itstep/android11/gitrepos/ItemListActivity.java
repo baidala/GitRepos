@@ -19,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import retrofit2.Callback;
@@ -40,6 +42,7 @@ public class ItemListActivity extends AppCompatActivity {
     EditText editTextSearch;
     Toolbar toolbar;
     ActionBar actionBar;
+    ProgressBar progressBar;
 
 
     @Override
@@ -47,30 +50,15 @@ public class ItemListActivity extends AppCompatActivity {
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
-
+        progressBar = (ProgressBar) findViewById(R.id.toolbar_progress_bar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         results = new ArrayList<>();
-
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
-
         actionBar = getSupportActionBar();
-
-
         recyclerView = (RecyclerView) findViewById(R.id.item_list);
-        assert recyclerView != null;
-        setupRecyclerView(recyclerView);
-
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
+
+        setSupportActionBar(toolbar);
+        setupRecyclerView(recyclerView);
 
         if (savedInstanceState != null){
             restorePreviousState(savedInstanceState);
@@ -108,7 +96,6 @@ public class ItemListActivity extends AppCompatActivity {
     private void restorePreviousState(Bundle savedInstanceState){
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() + ".restorePreviousState " );
         setTitle(savedInstanceState.getString(Prefs.TITLE));
-        //setTitle("restored");
         if (!savedInstanceState.getBoolean(Prefs.EDTEXT_IS_SHOWN)) {
             editTextSearch.setVisibility(View.GONE);
         }
@@ -226,9 +213,21 @@ public class ItemListActivity extends AppCompatActivity {
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" restoreFromDB ");
     }
 
+    private void showProgress(Boolean inProgress) {
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" showProgress " + inProgress);
+        if (inProgress) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+
+    }
+
+
     private void search(String text, int param) {
         Snackbar.make(recyclerView, "Sending request ...", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+        showProgress(true);
 
         switch (param) {
             case Prefs.ORGANIZATION:
@@ -277,6 +276,8 @@ public class ItemListActivity extends AppCompatActivity {
             public void onResponse(Call<OrgModelsList> call, Response<OrgModelsList> response) {
                 Snackbar.make(recyclerView, "Fetching results ...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                showProgress(false);
+
                 if (response.isSuccessful()) {
                     // request successful (status code 200, 201)
 
@@ -312,6 +313,7 @@ public class ItemListActivity extends AppCompatActivity {
             public void onFailure(Call<OrgModelsList> call, Throwable t) {
                 Snackbar.make(recyclerView, "ERROR: " + t.getMessage(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                showProgress(false);
 
                 if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onFailure "+ t.getMessage());
 
@@ -325,6 +327,8 @@ public class ItemListActivity extends AppCompatActivity {
             public void onResponse(Call<List<ReposModel>> call, Response<List<ReposModel>> response) {
                 Snackbar.make(recyclerView, "Fetching results ...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                showProgress(false);
+
                 if (response.isSuccessful()) {
                     // request successful (status code 200, 201)
 
@@ -366,7 +370,7 @@ public class ItemListActivity extends AppCompatActivity {
             public void onFailure(Call<List<ReposModel>> call, Throwable t) {
                 Snackbar.make(recyclerView, "ERROR: " + t.getMessage(), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
+                showProgress(false);
                 if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onFailure "+ t.getMessage());
 
             }
