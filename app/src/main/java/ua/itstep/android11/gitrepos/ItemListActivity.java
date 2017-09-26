@@ -53,11 +53,11 @@ public class ItemListActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.toolbar_progress_bar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         results = new ArrayList<>();
+        setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
         recyclerView = (RecyclerView) findViewById(R.id.item_list);
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
 
-        setSupportActionBar(toolbar);
         setupRecyclerView(recyclerView);
 
         if (savedInstanceState != null){

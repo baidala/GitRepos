@@ -9,7 +9,7 @@ import okhttp3.Response;
 /**
  * Created by Maksim Baydala on 23/09/17.
  */
-public class CustomInterceptor implements Interceptor {
+public class GitInterceptor implements Interceptor {
     @Override
     public Response intercept(Interceptor.Chain chain) throws IOException {
         Request original = chain.request();

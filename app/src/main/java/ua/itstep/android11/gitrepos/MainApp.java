@@ -22,7 +22,7 @@ public class MainApp extends Application {
         super.onCreate();
 
         client = new OkHttpClient.Builder()
-                .addInterceptor(new CustomInterceptor())
+                .addInterceptor(new GitInterceptor())
                 .build();
 
         retrofit = new Retrofit.Builder()
