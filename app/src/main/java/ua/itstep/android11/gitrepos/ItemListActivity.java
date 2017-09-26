@@ -2,13 +2,18 @@ package ua.itstep.android11.gitrepos;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.Snackbar;
@@ -40,6 +45,7 @@ public class ItemListActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar;
     ProgressBar progressBar;
+    LinearLayoutManager linearLayoutManager;
 
 
     @Override
@@ -52,6 +58,7 @@ public class ItemListActivity extends AppCompatActivity {
         results = new ArrayList<>();
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView = (RecyclerView) findViewById(R.id.item_list);
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
 
@@ -165,7 +172,9 @@ public class ItemListActivity extends AppCompatActivity {
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(results));
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext()));
     }
 
 
@@ -375,12 +384,12 @@ public class ItemListActivity extends AppCompatActivity {
 
             if (holder.mItem == null) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onBindViewHolder mIten == NULL");
 
-            holder.mIdView.setText(values.get(position).getId().toString());
-
             if (holder.mItem instanceof OrgModel) {
-                holder.mContentView.setText(((OrgModel) holder.mItem).getLogin());
+                holder.mIdView.setText( ((OrgModel) holder.mItem).getLogin() );
+                holder.mContentView.setText( ((OrgModel) holder.mItem).getHtmlUrl() );
             } else {
-                holder.mContentView.setText(((ReposModel) holder.mItem).getName());
+                holder.mIdView.setText( ((ReposModel) holder.mItem).getName() );
+                holder.mContentView.setText( ((ReposModel) holder.mItem).getDescription() );
             }
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -427,5 +436,34 @@ public class ItemListActivity extends AppCompatActivity {
             }
         }
     } //SimpleItemRecyclerViewAdapter
+
+
+    private class DividerItemDecoration extends RecyclerView.ItemDecoration {
+        private final int[] ATTRS = new int[]{android.R.attr.listDivider};
+        private Drawable divider;
+
+        public DividerItemDecoration(Context context){
+            final TypedArray styledAttributes = context.obtainStyledAttributes(ATTRS);
+            divider = styledAttributes.getDrawable(0);
+            styledAttributes.recycle();
+        }
+
+        @Override
+        public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            super.onDraw(c, parent, state);
+            int left = parent.getPaddingLeft();
+            int right = parent.getWidth() - parent.getPaddingRight();
+            int childCount = parent.getChildCount();
+            for (int i = 0; i < childCount; i++){
+                View child = parent.getChildAt(i);
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+                int top = child.getBottom() + params.bottomMargin;
+                int bottom = top + divider.getIntrinsicHeight();
+                divider.setBounds(left, top, right, bottom);
+                divider.draw(c);
+            }
+        }
+
+    } //DividerItemDecoration
 
 }
