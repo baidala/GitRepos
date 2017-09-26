@@ -77,8 +77,10 @@ public class OrgModel extends Model {
 
     public OrgModel(Parcel in) {
         super();
-        login = in.readString();
-        description = in.readString();
+        setId(in.readInt());
+        setLogin(in.readString());
+        setAvatarUrl(in.readString());
+        setHtmlUrl(in.readString());
 
     }
 
@@ -101,8 +103,11 @@ public class OrgModel extends Model {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(login);
-        dest.writeString(description);
+        dest.writeInt(getId());
+        dest.writeString(getLogin());
+        dest.writeString(getAvatarUrl());
+        dest.writeString(getHtmlUrl());
+
     }
 
     @Override

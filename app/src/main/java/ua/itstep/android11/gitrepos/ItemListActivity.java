@@ -2,6 +2,7 @@ package ua.itstep.android11.gitrepos;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -188,6 +189,8 @@ public class ItemListActivity extends AppCompatActivity {
         ContentResolver cr = getContentResolver();
         ContentValues cv = new ContentValues();
 
+        cr.delete(Prefs.URI_RESULTS, null, null);
+
         for (OrgModel model: list) {
             cv.put(Prefs.FIELD_GIT_ID, model.getId());
             cv.put(Prefs.FIELD_LOGIN, model.getLogin());
@@ -201,7 +204,26 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     private void restoreFromDB() {
+        ContentResolver cr = getContentResolver();
+        Cursor cursor = cr.query(Prefs.URI_RESULTS, null, null, null, null);
+        results.clear();
 
+        if ( (cursor != null) && cursor.moveToFirst() ) {
+            do {
+                OrgModel result = new OrgModel();
+                result.setId( cursor.getInt(cursor.getColumnIndex(Prefs.FIELD_GIT_ID)));
+                result.setLogin(cursor.getString(cursor.getColumnIndex(Prefs.FIELD_LOGIN)));
+                result.setHtmlUrl(cursor.getString(cursor.getColumnIndex(Prefs.FIELD_HTML_URL)));
+                result.setAvatarUrl(cursor.getString(cursor.getColumnIndex(Prefs.FIELD_AVATAR_URL)));
+
+                results.add(result);
+            } while (cursor.moveToNext());
+
+            recyclerView.getAdapter().notifyDataSetChanged();
+
+            cursor.close();
+        }
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" restoreFromDB ");
     }
 
     private void search(String text, int param) {
@@ -312,7 +334,6 @@ public class ItemListActivity extends AppCompatActivity {
                     List<ReposModel> items = response.body() ;
                     results.clear();
                     if ( items != null) {
-                        // Show the Up button in the action bar.
                         if (actionBar != null) {
                             actionBar.setDisplayHomeAsUpEnabled(true);
                         }
@@ -358,7 +379,6 @@ public class ItemListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private ArrayList<Model> values;
-        //private final List<ReposModel> values;
 
 
         public SimpleItemRecyclerViewAdapter(ArrayList<Model> items) {
