@@ -7,7 +7,7 @@
 - обработка поворота экрана
 - информ.сообщения в Snackbar + индикатор ProgressBar
 
-Использовал  одно Activity, EditText, RecyclerView + Adapter+кастомный DividerItemDecoration. c управкниеи UI элементами вручную.
+Использовал  одно Activity, EditText, RecyclerView + Adapter+кастомный DividerItemDecoration. c управлениеи UI элементами вручную.
 Для запросов к API GitHub - Retrofit2 + OkHttpClien+кастомный Interceptor.
 Для работы с базой -  ContentProvider+SQlite
 
